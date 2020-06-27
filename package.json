@@ -1,0 +1,23 @@
+{
+  "name": "blist.js",
+  "version": "1.0.0",
+  "description": "JS library for the blist bot list API.",
+  "main": "blist.js",
+  "keywords": [
+    "bot",
+    "list"
+  ],
+  "homepage": "https://github.com/trizlybear/blist.js#readme",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/trizlybear/blist.js.git"
+  },
+  "author": "Tristan Schmidt",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "body-parser": "^1.19.0",
+    "discord.js": "^12.2.0",
+    "express": "^4.17.1"
+  }
+}
