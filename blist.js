@@ -18,7 +18,7 @@ class Blist {
             this.key = key
         }
         if (!client instanceof d.Client) {
-            console.log("NONONO")
+            console.log("Bot client is not a discord.js client.")
         } else {
             this.client = client
             try {
@@ -38,7 +38,7 @@ class Blist {
         await axios.get(`${url}/api/bot/${id}/stats/`).then((r) => {
             o = r["data"] 
         }).catch((e) => {
-            if (e.response.status == 400) {
+            if (e.response.status == 404) {
                 console.error(`Could not find bot with ID: ${id}`)
             } else {
                 return console.error(`Error while sending request: ${e}`)
@@ -54,7 +54,7 @@ class Blist {
         await  axios.get(`${url}/api/user/${id}/`).then((r) => {
             o = r["data"]
         }).catch((e) => {
-            if (e.response.status == 400) {
+            if (e.response.status == 404) {
                 return console.error(`Could not find user with ID: ${id}`)
             } else {
                 return console.error(`Error while sending request: ${e}`)
@@ -63,14 +63,25 @@ class Blist {
         return o; 
     }
 
-    async fetchVotes() {
+    async fetchVotes(id) {
+        if (!this.key) {
+            return console.log("Please provide an API key on instance creation.")
+        }
+        var botid;
+        if (!id && this.client) {
+            return console.log("Client not provided on bot instance creation.")
+        } else if (this.client) {
+            botid = this.client.user.id
+        } else {
+            botid = id
+        }
         var o;
         console.log(this.client.user.id)
-        await axios.get(`${url}/api/bot/${this.client.user.id}/votes/`, {headers:{'Authorization':`${this.key}`}}).then((res) => {
+        await axios.get(`${url}/api/bot/${botid}/votes/`, {headers:{'Authorization':`${this.key}`}}).then((res) => {
             o = res["data"]
         }).catch((e) => {
             if (e.response.status == 403) {
-                return console.error(`Client did not provide API key or API key is invalid.`)
+                return console.error(`API key does not match bot API key.`)
             } else if (e.response.status == 404) {
                 return console.error(`This bot is not on Blist.`)
             }else {
@@ -102,6 +113,9 @@ class Blist {
     }
 
     async startAutopost(interval) {
+        if (this.autopost) {
+            return console.log("Autpost already running.")
+        }
         var i;
         if (!interval) {
             i = 1000 * 60 * 15
