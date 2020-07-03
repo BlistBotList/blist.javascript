@@ -72,3 +72,36 @@ client.fetchUser(id).then((user) => {
 ## Fetch bot votes
 
 Fetch the votes for your bot, this requires an instance started with a bot instance and API key
+
+```js
+// Fetch bot votes, id not required if discord.js bot client is provided on client creation
+client.fetchVotes(id).then((votes) => {
+  console.log(votes)
+})
+```
+
+## Post bot stats
+
+Posting bot stats requires you to provide a discord.js client instance and an api key on client creation.
+
+```js
+// Post bot stats
+client.postStats().then(() => {
+  console.log("Posted stats succesfully!")
+})
+```
+
+## Autposting bot stats
+
+Automaticaly post bot stats, requires you to provide a discord.js client instance and an api key on client creation.
+
+```js
+// Start autposting, interval is in minutes
+client.startAutopost(15).then(() => {
+  console.log("Now posting stats")
+})
+
+client.stopAutpost().then(() => {
+  console.log("Stopped autoposting stats")
+})
+```

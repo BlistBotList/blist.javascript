@@ -70,10 +70,12 @@ class Blist {
         var botid;
         if (!id && this.client) {
             return console.log("Client not provided on bot instance creation.")
+        } else if (id) {
+            botid = id
         } else if (this.client) {
             botid = this.client.user.id
         } else {
-            botid = id
+            return console.log("Please provide a bot ID to fetch votes for.")
         }
         var o;
         console.log(this.client.user.id)
@@ -100,7 +102,7 @@ class Blist {
             shards = 1
         }
         await axios.post(`${url}/api/bot/531057397272281089/stats/`, {server_count:this.client.guilds.cache.size,shard_count:shards}, {headers:{'Authorization':`${this.key}`}}).then((res) => {
-            console.log("Posted stats succesfuly")
+            return "Succesfully posted stats."
         }).catch((e) => {
             if (e.response.status == 403) {
                 return console.error(`Client did not provide API key or API key is invalid.`)
@@ -125,7 +127,6 @@ class Blist {
         this.autopost = setInterval(() => {
            this.postStats() 
         }, i);
-        console.log(`Autoposting bot stats every ${i / 60 / 1000} minutes.`)
     }
 
     async stopAutopost() {
