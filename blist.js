@@ -101,7 +101,7 @@ class Blist {
         } catch(e) {
             shards = 1
         }
-        await axios.post(`${url}/api/bot/531057397272281089/stats/`, {server_count:this.client.guilds.cache.size,shard_count:shards}, {headers:{'Authorization':`${this.key}`}}).then((res) => {
+        await axios.post(`${url}/api/bot/${this.client.user.id}/stats/`, {server_count:this.client.guilds.cache.size,shard_count:shards}, {headers:{'Authorization':`${this.key}`}}).then((res) => {
             return "Succesfully posted stats."
         }).catch((e) => {
             if (e.response.status == 403) {
