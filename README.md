@@ -2,7 +2,7 @@
 
 ## Getting Started
 
-This is the documentation for the Javascript wrapper for the Blist API. This documentation includes all information about installing and using the wrapper. This API requires your bot to be using [discord.js](https://discord.js.org/). 
+This is the documentation for the JavaScript wrapper for the Blist API. This documentation includes all information about installing and using the wrapper. This API requires your bot to be using [discord.js](https://discord.js.org/). 
 
 ## Installing
 
