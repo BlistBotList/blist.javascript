@@ -71,7 +71,7 @@ client.fetchUser(id).then((user) => {
 
 ## Fetch bot votes
 
-Fetch the votes for your bot, this requires an instance started with a bot instance and API key
+Fetch the votes for your bot, this requires an instance started with a bot instance and API key.
 
 ```js
 // Fetch bot votes, id not required if discord.js bot client is provided on client creation
