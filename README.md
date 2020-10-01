@@ -2,19 +2,18 @@
 
 ## Getting Started
 
-This is the documentation for the javascript wrapper for the Blist API. This documentation includes all information about installing and using the wrapper. This API requires your bot to be using [discord.js](https://discord.js.org/). 
+This is the documentation for the Javascript wrapper for the Blist API. This documentation includes all information about installing and using the wrapper. This API requires your bot to be using [discord.js](https://discord.js.org/). 
 
 ## Installing
 
-To install the API wrapper follow these steps:
-1. Open a command prompt in your bot's directory, or create a new directory and run `npm init`
-2. Run `npm i --save blist.js`. This will install the dependency and add it to your dependency list. (Or run `npm i blist.js`, not recommended)
-3. Blist.js should now be succesfuly installed.
+To install the API wrapper, follow these steps:
+1. Open a command prompt in your bot's directory, or create a new directory and run `npm init`.
+2. Run `npm i --save blist.js`. This will install the dependency and add it to your dependency list (or run `npm i blist.js`, though this is not recommended).
+3. Blist.js should now be successfully installed.
 
 ## Creating a new instance
 
-To create a new instance for the wrapper, we must first import the module.
-Once we imported our module, we can create a new instance by doing this
+To create a new instance for the wrapper, we must first import the module. Once we imported the module, we can create a new instance. See the code example below.
 
 ```js
 // Common JS import
@@ -23,16 +22,16 @@ const blist = require("blist.js");
 // ES6 Import
 import blist from "blist.js";
 
-//Create a new blist instance
+// Create a new blist instance
 const client = new blist(bot, apikey)
 ```
 
 ## Listen for votes using a webhook
  
-If you want to handle your bot votes, you can do so by starting a webhook. 
+If you want to handle your bot votes, you can do so by creating a webhook. 
 
 ```js
-//Create a new blist instance
+// Create a new blist instance
 const client = new blist(bot, apikey)
 const bot = new discordjs.Client()
 
@@ -49,7 +48,7 @@ bot.on("bot_vote", (vote) => {
     console.log(vote)
 })
 
-//Login your bot
+// Login your bot
 bot.login(token)
 ```
 
@@ -71,10 +70,10 @@ client.fetchUser(id).then((user) => {
 
 ## Fetch bot votes
 
-Fetch the votes for your bot, this requires an instance started with a bot instance and API key
+To fetch the votes for your bot, this requires initializing a bot instance with an API key.
 
 ```js
-// Fetch bot votes, id not required if discord.js bot client is provided on client creation
+// Fetch bot votes, id is not required if discord.js bot client is provided on client creation
 client.fetchVotes(id).then((votes) => {
   console.log(votes)
 })
@@ -82,7 +81,7 @@ client.fetchVotes(id).then((votes) => {
 
 ## Post bot stats
 
-Posting bot stats requires you to provide a discord.js client instance and an api key on client creation.
+Posting bot stats requires you to provide a discord.js client instance and an API key on client creation.
 
 ```js
 // Post bot stats
@@ -91,17 +90,17 @@ client.postStats().then(() => {
 })
 ```
 
-## Autposting bot stats
+## Autoposting bot stats
 
-Automaticaly post bot stats, requires you to provide a discord.js client instance and an api key on client creation.
+Automatically post bot stats. Requires you to provide a discord.js client instance and an API key on client creation.
 
 ```js
-// Start autposting, interval is in minutes
+// Start autoposting; the interval is in minutes
 client.startAutopost(15).then(() => {
   console.log("Now posting stats")
 })
 
-client.stopAutpost().then(() => {
+client.stopAutopost().then(() => {
   console.log("Stopped autoposting stats")
 })
 ```
