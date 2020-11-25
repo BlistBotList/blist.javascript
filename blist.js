@@ -1,170 +1,176 @@
 // Dependencies
 const axios = require("axios")
 const express = require("express")
-const d = require("discord.js")
-var bodyParser = require('body-parser')
-
-// Constants
+const discord = require("discord.js")
 const url = "https://blist.xyz"
 
-class Blist {
-    constructor(client, key) {
-        if (!key) {
-            console.log("Some functions might not be useable because you did not provide an API key.")
-        } else {
-            this.key = key
-        }
+let bodyParser = require('body-parser')
 
-        if (!client instanceof d.Client) {
-            console.log("Bot client is not a discord.js client.")
+class Blist {
+    constructor(client, apiKey) {
+        if (!apiKey) {
+            console.warn("Some functions might not be useable because you did not provide an API key");
         } else {
-            this.client = client
+            this.apiKey = apiKey;
+        };
+
+        if (!client instanceof discord.Client) {
+            return console.error("The client argument must be a discord.Client");
+        } else {
+            this.client = client;
             try {
-                console.log(`Authenticated bot ${client.user.username}`)
+                console.log(`Authenticated bot ${client.user.username}`);
             } catch (error) {
-                console.log("Could not authenticate client")
-            }
-        }
+                return console.log("Could not authenticate client");
+            };
+        };
+
         this.autopost;
-    }
+    };
 
     async fetchBot(id) {
         if (!id) {
-            return console.log("Argument id is missing")
-        }
-        var o;
-        await axios.get(`${url}/api/bot/${id}/stats/`).then((r) => {
-            o = r["data"] 
-        }).catch((e) => {
-            if (e.response.status == 404) {
-                console.error(`Could not find bot with ID: ${id}`)
+            return console.log("ID is a required argument");
+        };
+
+        let data;
+        await axios.get(`${url}/api/bot/${id}/stats/`).then((resp) => {
+            data = resp["data"];
+        }).catch((error) => {
+            if (error.response.status == 404) {
+                return console.error(`A bot with ID: ${id} could not be found on Blist`);
             } else {
-                return console.error(`Error while sending request: ${e}`)
-            }
-        })
-        return o;
+                return console.error(`There was an issue while sending a request: ${error}`);
+            };
+        });
+
+        return data;
     }
 
     async fetchUser(id) {
         if (!id) {
-            return console.log("Argument id is missing")
-        }
+            return console.log("ID is a required argument");
+        };
 
-        var o;
-        await axios.get(`${url}/api/user/${id}/`).then((r) => {
-            o = r["data"]
-        }).catch((e) => {
-            if (e.response.status == 404) {
-                return console.error(`Could not find user with ID: ${id}`)
+        let data;
+        await axios.get(`${url}/api/user/${id}/`).then((resp) => {
+            data = resp["data"];
+        }).catch((error) => {
+            if (error.response.status == 404) {
+                return console.error(`A user with ID: ${id} could not be found on Blist`);
             } else {
-                return console.error(`Error while sending request: ${e}`)
-            }
-        })
-        return o;
-    }
+                return console.error(`There was an issue while sending a request: ${error}`);
+            };
+        });
+
+        return data;
+    };
 
     async fetchVotes(id) {
-        if (!this.key) {
-            return console.log("Please provide an API key on instance creation.")
-        }
+        if (!this.apiKey) {
+            return console.log("An API key is required to use this method");
+        };
 
-        var botid;
-        if (!id && this.client) {
-            return console.log("Client not provided on bot instance creation.")
-        } else if (id) {
-            botid = id
-        } else if (this.client) {
-            botid = this.client.user.id
+        let botId;
+        if (id) {
+            botId = id;
         } else {
-            return console.log("Please provide a bot ID to fetch votes for.")
-        }
+            botId = this.client.user.id;
+        };
 
-        var o;
-        console.log(this.client.user.id)
-        await axios.get(`${url}/api/bot/${botid}/votes/`, {headers:{'Authorization':`${this.key}`}}).then((res) => {
-            o = res["data"]
-        }).catch((e) => {
-            if (e.response.status == 403) {
-                return console.error(`API key does not match bot API key.`)
-            } else if (e.response.status == 404) {
-                return console.error(`This bot is not on Blist.`)
+        let data;
+        await axios.get(`${url}/api/bot/${botId}/votes/`, { headers: { 'Authorization': `${this.apiKey}` } }).then((res) => {
+            data = res["data"];
+        }).catch((error) => {
+            if (error.response.status == 403) {
+                return console.error(`API key does not match bot API key.`);
+            } else if (error.response.status == 404) {
+                return console.error(`A bot with ID: ${id} could not be found on Blist`);
             } else {
-                return console.error(`Error while sending request: ${e.response.status}  `)
-            }
-        })
-        return o
-    }
+                return console.error(`There was an issue while sending a request: ${error}`);
+            };
+        });
+
+        return data;
+    };
 
     async postStats() {
-        var shards;
+        if (!this.apiKey) {
+            return console.log("An API key is required to use this method");
+        };
+
+        let shards;
         try {
-            shards = this.client.shard.fetchClientValues('guilds.size').size
-        } catch(e) {
-            shards = 1
-        }
-        await axios.post(`${url}/api/bot/${this.client.user.id}/stats/`, {server_count:this.client.guilds.cache.size,shard_count:shards}, {headers:{'Authorization':`${this.key}`}}).then((res) => {
-            return "Succesfully posted stats."
-        }).catch((e) => {
-            if (e.response.status == 403) {
-                return console.error(`Client did not provide API key or API key is invalid.`)
-            } else if (e.response.status == 404) {
-                return console.error(`This bot is not on Blist.`)
+            shards = this.client.shard.fetchClientValues('guilds.size').size;
+        } catch (error) {
+            shards = 0;
+        };
+
+        await axios.post(`${url}/api/bot/${this.client.user.id}/stats/`, { server_count: this.client.guilds.cache.size, shard_count: shards }, { headers: { 'Authorization': `${this.apiKey}` } }).then((res) => {
+            return console.log("Succesfully posted stats");
+        }).catch((error) => {
+            if (error.response.status == 403) {
+                return console.error(`API key does not match bot API key.`);
+            } else if (error.response.status == 404) {
+                return console.error(`A bot with ID: ${id} could not be found on Blist`);
             } else {
-                return console.error(`Error while sending request: ${e.response.status}`)
-            }
-        })
-    }
+                return console.error(`There was an issue while sending a request: ${error}`);
+            };
+        });
+    };
 
     async startAutopost(interval) {
         if (this.autopost) {
-            return console.log("Autpost already running.")
-        }
-        var i;
+            return console.log("Autopost is already running")
+        };
+
+        let i;
         if (!interval) {
-            i = 1000 * 60 * 15
+            i = 1000 * 60 * 15;
         } else {
-            i = 1000 * 60 * interval
-        }
+            i = 1000 * 60 * interval;
+        };
+
         this.autopost = setInterval(() => {
-           this.postStats() 
+            this.postStats();
         }, i);
-    }
+    };
 
     async stopAutopost() {
         try {
-            clearInterval(this.autopost)
-            console.log("Stopped autoposting bot stats.")
+            clearInterval(this.autopost);
+            return console.log("Autoposting of bot stats has stopped");
         } catch (error) {
-            console.log("Currently not autoposting.")
-        }
-    }
+            return console.log("Autoposting of bot stats was never initiated");
+        };
+    };
 
     startWebhook(p) {
-        this.webhook = express()
-        var port = p || 8000
-        this.webhook.use(bodyParser.json())
+        this.webhook = express();
+        let port = p || 8000;
+        this.webhook.use(bodyParser.json());
         this.webhook.use(bodyParser.urlencoded({ extended: false }));
 
         this.webhook.post('/', (req, res) => {
-            this.client.emit("bot_vote", req.body)
-            res.end()
-        })
-        
-        this.forclose = this.webhook.listen(port, "0.0.0.0", function() {
-            console.log(`Listening on port ${port}`)
-        })
-        
-    }
-    
+            this.client.emit("botVote", req.body);
+            res.end();
+        });
+
+        this.forclose = this.webhook.listen(port, "0.0.0.0", function () {
+            console.log(`Listening on port ${port}`);
+        });
+    };
+
     stopWebhook() {
         try {
-            this.forclose.close()
+            this.forclose.close();
             delete this.forclose;
-            console.log("Closed webhook")
+            console.log("Closed webhook");
         } catch (error) {
-            console.log("No webhook running")
-        }
-    }
+            console.log("No webhook running");
+        };
+    };
+};
 
 module.exports = Blist
 module.exports.default = Blist
