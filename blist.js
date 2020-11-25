@@ -9,7 +9,7 @@ let bodyParser = require('body-parser')
 class Blist {
     constructor(client, apiKey) {
         if (!apiKey) {
-            console.log("Some functions might not be useable because you did not provide an API key");
+            console.warn("Some functions might not be useable because you did not provide an API key");
         } else {
             this.apiKey = apiKey;
         };
