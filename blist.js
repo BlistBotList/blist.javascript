@@ -15,7 +15,7 @@ class Blist {
         };
 
         if (!client instanceof discord.Client) {
-            return console.log("The Client argument must be a discord.Client");
+            return console.error("The client argument must be a discord.Client");
         } else {
             this.client = client;
             try {
