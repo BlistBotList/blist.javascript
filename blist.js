@@ -121,7 +121,7 @@ class Blist {
 
     async startAutopost(interval) {
         if (this.autopost) {
-            return console.log("Autpost is already running")
+            return console.log("Autopost is already running")
         };
 
         let i;
