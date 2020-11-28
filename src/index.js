@@ -1,12 +1,13 @@
 const {get, post} = require("superagent"),
       express = require("express"),
       {name, version} = require("../package.json"),
-      err = `[${name}, v${version}]:`
+      err = `[${name}, v${version}]:`,
+      Discord = require(`discord.js`)
 
 module.exports = class Blist {
     constructor(client, key){
         if(!client) throw new Error(`${err} You don't have a client in the new constructor.`);
-        if(!client.user) throw new Error(`${err} The client you provided doesn't have a ".user" property`);
+        if(!(client instanceof Discord.Client)) throw new Error(`${err} The client you provided isn't a instanceof Discord.Client`);
         if(!key || typeof key !== "string") throw new Error(`${err} You didn't provide an API key or the API key provided isn't a string.`);
         this.base = "https://blist.xyz";
 
@@ -98,8 +99,13 @@ module.exports = class Blist {
         return true;
     };
     /**
+    * @typedef {Object} WebhookOptions
+    * @property {string} [endpoint=""]
+    * @property {string} [emit="botVote"]
+    */
+    /**
      * @param {number} [port=8000]
-     * @param {?string} [name="upvote"]
+     * @param {WebhookOptions} [opt]
      */
     startWebhook(port = 8000, opt = {endpoint: "", emit: "botVote"}){
         const app = express();
