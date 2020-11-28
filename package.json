@@ -1,10 +1,11 @@
 {
   "name": "blist.js",
   "version": "1.5.0",
-  "description": "JavaScript wrapper for the blist.xyz API ",
+  "description": "JavaScript wrapper for the blist.xyz API",
   "main": "./src/index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BlistBotList/blist.js.git"
   },
   "keywords": [
     "blist",
@@ -12,13 +13,12 @@
     "botlist",
     "botlists"
   ],
-  "author": "Tristan Schmidt & Gavyn Stanley",
+  "author": "Blist & SUPERCHIEFYT",
   "license": "MIT",
-  "homepage": "https://github.com/BlistBotList/blist.js/blob/master/README.md",
-  "repository": {
-    "type" : "git",
-    "url" : "https://github.com/BlistBotList/blist.js"
+  "bugs": {
+    "url": "https://github.com/BlistBotList/blist.js/issues"
   },
+  "homepage": "https://github.com/BlistBotList/blist.js#readme",
   "dependencies": {
     "express": "^4.17.1",
     "superagent": "^6.1.0",
