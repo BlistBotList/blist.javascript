@@ -71,6 +71,15 @@ To fetch the votes for your bot, this requires initializing a bot instance with 
 // Fetch bot votes, id is not required if discord.js bot client is provided on client creation
 client.fetchVotes().then((votes) => console.log(votes));
 ```
+## Fetch bot reviews
+
+Fetch the `Discord.Client()`'s bot reviews!
+
+```js
+// Returns: {reviews: [Review_Objects]}
+client.fetchReviews().then((reviews) => console.log(reviews));
+```
+
 
 ## Check user(s) votes
 To check if certain user(s) have voted, use this method!
@@ -95,6 +104,7 @@ client.postStats().then(() => console.log("Posted stats succesfully!"));
 // Provide the server_count and shards_count yourself. 
 client.postStats(server_count, shards_count).then(() => console.log(`Posted stats successfully!`));
 ```
+
 
 ## Autoposting bot stats
 
