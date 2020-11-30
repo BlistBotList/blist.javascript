@@ -22,6 +22,6 @@
   "dependencies": {
     "express": "^4.17.1",
     "superagent": "^6.1.0",
-    "discord.js": "12.5.0"
+    "discord.js": "12.5.1"
   }
 }
