@@ -1,4 +1,4 @@
-const {get, post} = require("superagent"),
+const {get, patch} = require("superagent"),
       express = require("express"),
       {name, version} = require("../package.json"),
       err = `[${name}, v${version}]:`,
@@ -48,9 +48,25 @@ module.exports = class Blist {
             return voters.includes(ids);
         }
     };
-
+    /**
+     * @typedef {Object} Reviews
+     * @property {string} [feedback] - The feedback given by a user.
+     * @property {boolean} [recommended] - If the user marked it as recommended.
+     * @property {string} [time] - When the user left the review.
+     */
+    /**
+     * @typedef {Object} ReviewResponse
+     * @property {Reviews[]} [reviews] - The array of the reviews given.
+     */
+    /**
+     * @returns {Promise<ReviewResponse>}
+     */
+    async fetchReviews(){
+      return await this._get(`${this.base}/api/v2/bot/${this.client.user.id}/reviews`)
+    }
+      
     async fetchVotes(){
-        return await this._get(`${this.base}/api/bot/${this.client.user.id}/votes`)
+        return await this._get(`${this.base}/api/v2/bot/${this.client.user.id}/votes`)
     };
 
     /**
@@ -58,21 +74,21 @@ module.exports = class Blist {
      */
     async fetchUser(id){
         if(!id) throw new Error(`${err} You didn't provide a user ID`);
-        return await this._get(`${this.base}/api/user/${id}`)
+        return await this._get(`${this.base}/api/v2/user/${id}`)
     }; 
     /**
      * @param {string} [id] - The bot's user ID 
      */
     async fetchBot(id){
         if(!id) throw new Error(`${err} You didn't provide a bot ID`);
-        return await this._get(`${this.base}/api/bot/${id}/stats`)
+        return await this._get(`${this.base}/api/v2/bot/${id}/stats`)
     };
 
 
     async postStats(servers = null, shards = null){ 
         if(this.client.shard) shards = this.client.shard.fetchClientValues('guilds.size').size;
 
-        return await post(`${this.base}/api/bot/${this.client.user.id}/stats`)
+        return await patch(`${this.base}/api/v2/bot/${this.client.user.id}/stats`)
         .set("Authorization", this.key)
         .send({
             "server_count": servers ? servers : this.client.guilds.cache ? this.client.guilds.cache.size : this.client.guilds.size,
