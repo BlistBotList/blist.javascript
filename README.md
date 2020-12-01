@@ -8,7 +8,7 @@ This is the documentation for the JavaScript wrapper for the Blist API. This doc
 
 To install the API wrapper, follow these simple steps:
 1. Open a command prompt in your bot's directory, or create a new directory and run `npm init`.
-2. Run `npm i blist.js`. This will install the dependency and add it to your dependency list.
+2. Run `npm i blist.javascript`. This will install the dependency and add it to your dependency list.
 3. blist.js should now be successfully installed.
 
 ## Creating a new instance
@@ -17,7 +17,7 @@ To create a new instance for the wrapper, we must first import the module. Once 
 
 ```js
 // Import the blist.js package
-const blist = require("blist.js");
+const blist = require("blist.javascript");
 
 // Create a new blist instance
 const client = new blist(bot, apiKey);

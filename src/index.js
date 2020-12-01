@@ -1,14 +1,14 @@
-const {get, patch} = require("superagent"),
-      express = require("express"),
-      {name, version} = require("../package.json"),
-      err = `[${name}, v${version}]:`,
-      Discord = require(`discord.js`)
+const { get, patch } = require("superagent"),
+    express = require("express"),
+    { name, version } = require("../package.json"),
+    err = `[${name}, v${version}]:`,
+    Discord = require(`discord.js`)
 
 module.exports = class Blist {
-    constructor(client, key){
-        if(!client) throw new Error(`${err} You don't have a client in the new constructor.`);
-        if(!(client instanceof Discord.Client)) throw new Error(`${err} The client you provided isn't a instanceof Discord.Client`);
-        if(!key || typeof key !== "string") throw new Error(`${err} You didn't provide an API key or the API key provided isn't a string.`);
+    constructor(client, key) {
+        if (!client) throw new Error(`${err} You don't have a client in the new constructor.`);
+        if (!(client instanceof Discord.Client)) throw new Error(`${err} The client you provided isn't a instanceof Discord.Client`);
+        if (!key || typeof key !== "string") throw new Error(`${err} You didn't provide an API key or the API key provided isn't a string.`);
         this.base = "https://blist.xyz";
 
         this.key = key;
@@ -19,7 +19,7 @@ module.exports = class Blist {
     /**
      * @returns {string}
      */
-    get version(){
+    get version() {
         return version;
     };
     /**
@@ -37,14 +37,14 @@ module.exports = class Blist {
      * console.log(voted); // Returns user ids of users that have voted in the last 24 hours.
     
      */
-    async hasVoted(ids){
+    async hasVoted(ids) {
         let res = await this.fetchVotes().catch(() => null);
-        if(!res) return Array.isArray(ids) ? [] : false;
+        if (!res) return Array.isArray(ids) ? [] : false;
         let voters = (res.votes || []).map(c => c.userid);
-        if(Array.isArray(ids)){
-            if(voters.length === 0) return [];
+        if (Array.isArray(ids)) {
+            if (voters.length === 0) return [];
             return voters.filter(c => ids.includes(c));
-        }else{
+        } else {
             return voters.includes(ids);
         }
     };
@@ -61,56 +61,56 @@ module.exports = class Blist {
     /**
      * @returns {Promise<ReviewResponse>}
      */
-    async fetchReviews(){
-      return await this._get(`${this.base}/api/v2/bot/${this.client.user.id}/reviews`)
+    async fetchReviews() {
+        return await this._get(`${this.base}/api/v2/bot/${this.client.user.id}/reviews`)
     }
-      
-    async fetchVotes(){
+
+    async fetchVotes() {
         return await this._get(`${this.base}/api/v2/bot/${this.client.user.id}/votes`)
     };
 
     /**
      * @param {string} [id] - The user's ID 
      */
-    async fetchUser(id){
-        if(!id) throw new Error(`${err} You didn't provide a user ID`);
+    async fetchUser(id) {
+        if (!id) throw new Error(`${err} You didn't provide a user ID`);
         return await this._get(`${this.base}/api/v2/user/${id}`)
-    }; 
+    };
     /**
      * @param {string} [id] - The bot's user ID 
      */
-    async fetchBot(id){
-        if(!id) throw new Error(`${err} You didn't provide a bot ID`);
-        return await this._get(`${this.base}/api/v2/bot/${id}/stats`)
+    async fetchBot(id) {
+        if (!id) throw new Error(`${err} You didn't provide a bot ID`);
+        return await this._get(`${this.base}/api/v2/bot/${id}/`)
     };
 
 
-    async postStats(servers = null, shards = null){ 
-        if(this.client.shard) shards = this.client.shard.fetchClientValues('guilds.size').size;
+    async postStats(servers = null, shards = null) {
+        if (this.client.shard) shards = this.client.shard.fetchClientValues('guilds.size').size;
 
         return await patch(`${this.base}/api/v2/bot/${this.client.user.id}/stats`)
-        .set("Authorization", this.key)
-        .send({
-            "server_count": servers ? servers : this.client.guilds.cache ? this.client.guilds.cache.size : this.client.guilds.size,
-            "shard_count": shards ? shards : 1
-        })
-        .then(r => r.body)
-        .catch((err) => err);
+            .set("Authorization", this.key)
+            .send({
+                "server_count": servers ? servers : this.client.guilds.cache ? this.client.guilds.cache.size : this.client.guilds.size,
+                "shard_count": shards ? shards : 1
+            })
+            .then(r => r.body)
+            .catch((err) => err);
     };
     /**
      * @param {number} [minutes=30] - The number of minutes before posting the stats to the site again. 
      */
-    startAutopost(minutes = 30){ // Post every 30 minutes, by default.
-        if(this.interval) throw new Error(`${err} The auto posting is already running.`)
-        if(isNaN(minutes)) throw new Error(`${err} You didn't provide a valid number of minutes, it has to be a number.`);
+    startAutopost(minutes = 30) { // Post every 30 minutes, by default.
+        if (this.interval) throw new Error(`${err} The auto posting is already running.`)
+        if (isNaN(minutes)) throw new Error(`${err} You didn't provide a valid number of minutes, it has to be a number.`);
         this.interval = setInterval(() => this.postStats(), minutes * 60000);
         return this;
     };
     /**
      * @returns {boolean}
      */
-    stopAutopost(){
-        if(!this.interval) return false;
+    stopAutopost() {
+        if (!this.interval) return false;
         clearInterval(this.interval);
         return true;
     };
@@ -123,24 +123,24 @@ module.exports = class Blist {
      * @param {number} [port=8000]
      * @param {WebhookOptions} [opt]
      */
-    startWebhook(port = 8000, opt = {endpoint: "", emit: "botVote"}){
+    startWebhook(port = 8000, opt = { endpoint: "", emit: "botVote" }) {
         const app = express();
         app
-        .use(express.json())
-        .use(express.urlencoded({extended: false}))
-        .post(`/${opt.endpoint}`, (req, res) => {
-            console.log(req.headers, this.key)
-            if(req.headers["authorization"] !== this.key) return res.status(401).end();
-            this.client.emit(opt.emit, req.body);
-            return res.status(200).end();
-        })
+            .use(express.json())
+            .use(express.urlencoded({ extended: false }))
+            .post(`/${opt.endpoint}`, (req, res) => {
+                console.log(req.headers, this.key)
+                if (req.headers["authorization"] !== this.key) return res.status(401).end();
+                this.client.emit(opt.emit, req.body);
+                return res.status(200).end();
+            })
         this.server = app.listen(port, () => console.log(`${err} Webhook server started, listening on port: ${port}`));
         return this;
     };
-    stopWebhook(){
-        if(!this.server) throw new Error(`${err} The webhook server isn't running.`);
+    stopWebhook() {
+        if (!this.server) throw new Error(`${err} The webhook server isn't running.`);
         this.server.close(err => {
-            if(!err) return null;
+            if (!err) return null;
             throw new Error(`${err} ${err}`)
         });
         this.server = null;
@@ -148,7 +148,7 @@ module.exports = class Blist {
     };
 
     // Helper Method 
-    async _get(url){
+    async _get(url) {
         return await get(url).set("Authorization", this.key).then(r => r.body);
     }
 }
