@@ -7,7 +7,7 @@ const { get, patch } = require("superagent"),
 module.exports = class Blist {
     constructor(client, key) {
         if (!client) throw new Error(`${err} You don't have a client in the new constructor.`);
-        if (!(client instanceof Discord.Client)) throw new Error(`${err} The client you provided isn't a instanceof Discord.Client`);
+        if (!(client instanceof Discord.Client)) throw new Error(`${err} The client you provided isn't a (discord.js) instanceof Discord.Client`);
         if (!key || typeof key !== "string") throw new Error(`${err} You didn't provide an API key or the API key provided isn't a string.`);
         this.base = "https://blist.xyz";
 
@@ -100,7 +100,7 @@ module.exports = class Blist {
     /**
      * @param {number} [minutes=30] - The number of minutes before posting the stats to the site again. 
      */
-    startAutopost(minutes = 30) { // Post every 30 minutes, by default.
+    async startAutopost(minutes = 30) { // Post every 30 minutes, by default.
         if (this.interval) throw new Error(`${err} The auto posting is already running.`)
         if (isNaN(minutes)) throw new Error(`${err} You didn't provide a valid number of minutes, it has to be a number.`);
         this.interval = setInterval(() => this.postStats(), minutes * 60000);
@@ -109,7 +109,7 @@ module.exports = class Blist {
     /**
      * @returns {boolean}
      */
-    stopAutopost() {
+    async stopAutopost() {
         if (!this.interval) return false;
         clearInterval(this.interval);
         return true;
