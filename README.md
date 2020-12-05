@@ -45,7 +45,7 @@ bot.on("ready" => {
 });
 
 // Detects when someone votes for your bot
-bot.on("botVote", (vote) => console.log(vote));
+client.on("botVote", (vote) => console.log(vote));
 
 // Login your bot
 bot.login(token);
