@@ -1,6 +1,6 @@
 {
   "name": "blist.javascript",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "description": "JavaScript wrapper for the blist.xyz API",
   "main": "./src/index.js",
   "repository": {
@@ -21,7 +21,6 @@
   "homepage": "https://github.com/BlistBotList/blist.javascript#readme",
   "dependencies": {
     "express": "^4.17.1",
-    "superagent": "^6.1.0",
-    "discord.js": "12.5.1"
+    "superagent": "^6.1.0"
   }
 }
