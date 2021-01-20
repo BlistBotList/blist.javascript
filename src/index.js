@@ -1,13 +1,11 @@
 const { get, patch } = require("superagent"),
     express = require("express"),
     { name, version } = require("../package.json"),
-    err = `[${name}, v${version}]:`,
-    Discord = require(`discord.js`)
+    err = `[${name}, v${version}]:`;
 
 module.exports = class Blist {
     constructor(client, key) {
         if (!client) throw new Error(`${err} You don't have a client in the new constructor.`);
-        if (!(client instanceof Discord.Client)) throw new Error(`${err} The client you provided isn't a (discord.js) instanceof Discord.Client`);
         if (!key || typeof key !== "string") throw new Error(`${err} You didn't provide an API key or the API key provided isn't a string.`);
         this.base = "https://blist.xyz";
 
@@ -62,10 +60,12 @@ module.exports = class Blist {
      * @returns {Promise<ReviewResponse>}
      */
     async fetchReviews() {
+        if(!this.client.user) throw new Error(`${err} There is no client user attached to the "client" property.\nMake sure the client is connected before using this endpoint.`)
         return await this._get(`${this.base}/api/v2/bot/${this.client.user.id}/reviews`)
     }
 
     async fetchVotes() {
+        if(!this.client.user) throw new Error(`${err} There is no client user attached to the "client" property.\nMake sure the client is connected before using this endpoint.`)
         return await this._get(`${this.base}/api/v2/bot/${this.client.user.id}/votes`)
     };
 
@@ -86,6 +86,7 @@ module.exports = class Blist {
 
 
     async postStats(servers = null, shards = null) {
+        if (!this.client.user) throw new Error(`${err} There is no client user attached to the "client" property.\nMake sure the client is connected before using this endpoint.`)
         if (this.client.shard) shards = this.client.shard.fetchClientValues('guilds.size').size;
 
         return await patch(`${this.base}/api/v2/bot/${this.client.user.id}/stats`)
@@ -124,6 +125,7 @@ module.exports = class Blist {
      * @param {WebhookOptions} [opt]
      */
     startWebhook(port = 8000, opt = { endpoint: "", emit: "botVote" }) {
+        console.log(`${err} [DEPRECATED]: startWebhook is no longer working, due to the removal of the voting webhook on blist.xyz`);
         const app = express();
         app
             .use(express.json())
@@ -138,6 +140,7 @@ module.exports = class Blist {
         return this;
     };
     stopWebhook() {
+      console.log(`${err} [DEPRECATED]: stopWebhook is no longer working, due to the removal of the voting webhook on blist.xyz`);
         if (!this.server) throw new Error(`${err} The webhook server isn't running.`);
         this.server.close(err => {
             if (!err) return null;
